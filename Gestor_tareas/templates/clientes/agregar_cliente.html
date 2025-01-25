@@ -1,0 +1,19 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Agregar Cliente{% endblock %}
+
+{% block content %}
+    <h1>Agregar Cliente</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label>Nombre:</label>
+        <input type="text" name="nombre" required><br>
+        <label>Contacto:</label>
+        <input type="text" name="contacto" required><br>
+        <label>Dirección:</label>
+        <input type="text" name="direccion"><br>
+        <label>Email:</label>
+        <input type="email" name="email"><br>
+        <button type="submit">Guardar</button>
+    </form>
+{% endblock %}

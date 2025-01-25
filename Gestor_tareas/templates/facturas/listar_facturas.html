@@ -1,0 +1,32 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Lista de Facturas{% endblock %}
+
+{% block content %}
+    <h1 style="text-align: center; color: #2c3e50; margin-bottom: 20px;">Lista de Facturas</h1>
+
+    <div class="content">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Número de Factura</th>
+                    <th>Cliente</th>
+                    <th>Empleado</th>
+                    <th>Total</th>
+                    <th>Fecha de Emisión</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for factura in facturas %}
+                <tr>
+                    <td>{{ factura.numero_factura }}</td>
+                    <td>{{ factura.cliente.nombre }}</td>
+                    <td>{{ factura.empleado.nombre }}</td>
+                    <td>${{ factura.total }}</td>
+                    <td>{{ factura.fecha_emision }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

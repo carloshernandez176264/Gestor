@@ -1,0 +1,55 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Informe Gerencial{% endblock %}
+
+{% block content %}
+    <h1 class="text-center">Informe Gerencial</h1>
+
+    <!-- Gráficos -->
+    <div class="graphics-container">
+        <div class="graphic-box">
+            <h2>Porcentaje de Facturación por Cliente</h2>
+            <img src="data:image/png;base64,{{ grafico_porcentajes_cliente }}" alt="Porcentaje de Facturación">
+        </div>
+
+        <div class="graphic-box">
+            <h2>Comparación Anual en Porcentaje</h2>
+            <img src="data:image/png;base64,{{ grafico_comparativo_anual }}" alt="Comparación Anual">
+        </div>
+
+        <div class="graphic-box">
+            <h2>Facturación por Empleado</h2>
+            <img src="data:image/png;base64,{{ grafico_empleados }}" alt="Facturación por Empleado">
+        </div>
+
+        <div class="graphic-box">
+            <h2>Cantidad de Empleados por Cliente</h2>
+            <img src="data:image/png;base64,{{ grafico_clientes }}" alt="Empleados por Cliente">
+        </div>
+    </div>
+
+    <!-- Tablas de datos -->
+    <div class="data-container">
+        <h3>Facturación Total por Cliente</h3>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Total Facturado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente, total in facturacion_por_cliente.items %}
+                <tr>
+                    <td>{{ cliente }}</td>
+                    <td>${{ total|floatformat:2 }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">No hay datos disponibles.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

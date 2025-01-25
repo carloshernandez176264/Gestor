@@ -1,0 +1,13 @@
+{% extends 'base_dashboard.html' %}
+
+{% block title %}Eliminar Factura{% endblock %}
+
+{% block content %}
+    <h1>Eliminar Factura</h1>
+    <p>¿Estás seguro de que deseas eliminar la factura <strong>{{ factura.id }}</strong>?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+        <a href="{% url 'listar_facturas' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+{% endblock %}
