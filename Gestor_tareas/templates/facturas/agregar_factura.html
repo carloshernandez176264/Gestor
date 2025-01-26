@@ -5,7 +5,10 @@
 {% block content %}
 <h1 style="text-align: center; color: #2c3e50;">Agregar Factura</h1>
 
-<!-- Formulario para seleccionar cliente -->
+{% if error %}
+<p style="color: red; text-align: center;">{{ error }}</p>
+{% endif %}
+
 <form method="GET" action="{% url 'agregar_factura' %}" class="form-container">
     <div class="form-group">
         <label for="cliente_id">Cliente:</label>
@@ -20,9 +23,10 @@
     </div>
 </form>
 
-<!-- Formulario para agregar factura -->
 <form method="POST" action="{% url 'agregar_factura' %}" class="form-container">
     {% csrf_token %}
+    <input type="hidden" name="cliente_id" value="{{ request.GET.cliente_id }}">
+
     <div class="form-group">
         <label for="empleado_id">Empleado:</label>
         <select name="empleado_id" id="empleado_id" class="form-control" required>
@@ -46,5 +50,4 @@
     </div>
     <button type="submit" class="btn btn-primary">Guardar</button>
 </form>
-
 {% endblock %}
