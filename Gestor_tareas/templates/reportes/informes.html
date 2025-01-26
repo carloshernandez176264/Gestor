@@ -5,7 +5,6 @@
 {% block content %}
     <h1 class="text-center">Informe Gerencial</h1>
 
-    <!-- Gráficos -->
     <div class="graphics-container">
         <div class="graphic-box">
             <h2>Porcentaje de Facturación por Cliente</h2>
@@ -13,7 +12,7 @@
         </div>
 
         <div class="graphic-box">
-            <h2>Comparación Anual en Porcentaje</h2>
+            <h2>Comparación de Facturación Anual</h2>
             <img src="data:image/png;base64,{{ grafico_comparativo_anual }}" alt="Comparación Anual">
         </div>
 
@@ -28,7 +27,6 @@
         </div>
     </div>
 
-    <!-- Tablas de datos -->
     <div class="data-container">
         <h3>Facturación Total por Cliente</h3>
         <table class="styled-table">

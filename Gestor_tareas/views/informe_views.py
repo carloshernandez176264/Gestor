@@ -2,6 +2,8 @@ import random
 from collections import defaultdict
 
 from django.shortcuts import render
+from matplotlib import cm
+
 from Gestor_tareas.models import Factura
 import matplotlib.pyplot as plt
 import io
@@ -18,7 +20,7 @@ def generar_informe(request):
     facturacion_empleados = defaultdict(float)
 
     # Procesar facturas
-    facturas = Factura.objects.all()
+    facturas = Factura.objects.select_related('cliente', 'empleado').all()
     for factura in facturas:
         if factura.fecha_emision:
             anio = factura.fecha_emision.year
@@ -29,79 +31,82 @@ def generar_informe(request):
         if factura.empleado:
             facturacion_empleados[factura.empleado.nombre] += float(factura.total)
 
-    # Gráfico de porcentajes por cliente
+    # Gráfico 1: Porcentaje de Facturación por Cliente
     clientes = list(facturacion_por_cliente.keys())
     totales_clientes = list(facturacion_por_cliente.values())
-    colores_clientes = [f"#{''.join(random.choices('0123456789ABCDEF', k=6))}" for _ in clientes]
+    colores_clientes = cm.get_cmap('tab10')(range(len(clientes)))  # Usar colores de la paleta `tab10`
 
     plt.figure(figsize=(8, 8))
-    plt.pie(totales_clientes, labels=clientes, autopct='%1.1f%%', startangle=140, colors=colores_clientes)
-    plt.title('Porcentaje de Facturación por Cliente')
+    plt.pie(
+        totales_clientes,
+        labels=clientes,
+        autopct=lambda p: f'{p:.1f}%\n({p * sum(totales_clientes) / 100:.2f})',
+        startangle=90,
+        colors=colores_clientes,
+        wedgeprops={'edgecolor': 'black'}  # Borde para mayor claridad
+    )
+    plt.title('Porcentaje de Facturación por Cliente', fontsize=14)
     plt.tight_layout()
 
+    # Guardar gráfico
     buffer_pie = io.BytesIO()
     plt.savefig(buffer_pie, format='png')
+    plt.close()
     buffer_pie.seek(0)
     grafico_porcentajes_cliente = base64.b64encode(buffer_pie.getvalue()).decode('utf-8')
     buffer_pie.close()
-    plt.close()
 
-    # Comparativo anual en porcentaje
+    # Gráfico 2: Comparación Anual
     anios = sorted(facturacion_anual.keys())
     totales_anuales = [facturacion_anual[anio] for anio in anios]
-    total_global = sum(totales_anuales)
-    porcentajes_anuales = [(total / total_global) * 100 for total in totales_anuales]
-
     plt.figure(figsize=(10, 6))
-    plt.bar(anios, porcentajes_anuales, color='skyblue')
-    plt.xlabel('Año')
-    plt.ylabel('Porcentaje del Total')
-    plt.title('Comparación Anual en Porcentaje')
-    plt.tight_layout()
-
+    plt.bar(anios, totales_anuales, color='lightblue', edgecolor='blue')
+    plt.xlabel('Año', fontsize=12)
+    plt.ylabel('Total Facturado ($)', fontsize=12)
+    plt.title('Comparación de Facturación Anual', fontsize=14)
+    plt.xticks(anios)
+    for i, total in enumerate(totales_anuales):
+        plt.text(i, total, f'{total:.2f}', ha='center', va='bottom')
     buffer_anual = io.BytesIO()
     plt.savefig(buffer_anual, format='png')
+    plt.close()
     buffer_anual.seek(0)
     grafico_comparativo_anual = base64.b64encode(buffer_anual.getvalue()).decode('utf-8')
     buffer_anual.close()
-    plt.close()
 
-    # Gráfico de facturación por empleado
+    # Gráfico 3: Facturación por Empleado
     empleados = list(facturacion_empleados.keys())
     totales_empleados = list(facturacion_empleados.values())
-
     plt.figure(figsize=(10, 6))
-    plt.barh(empleados, totales_empleados, color='purple')
-    plt.xlabel('Facturación Total')
-    plt.ylabel('Empleado')
-    plt.title('Facturación por Empleado')
-    plt.tight_layout()
-
+    plt.barh(empleados, totales_empleados, color='purple', edgecolor='black')
+    plt.xlabel('Facturación Total ($)', fontsize=12)
+    plt.ylabel('Empleado', fontsize=12)
+    plt.title('Facturación por Empleado', fontsize=14)
+    for i, total in enumerate(totales_empleados):
+        plt.text(total, i, f'{total:.2f}', va='center')
     buffer_empleados = io.BytesIO()
     plt.savefig(buffer_empleados, format='png')
+    plt.close()
     buffer_empleados.seek(0)
     grafico_empleados = base64.b64encode(buffer_empleados.getvalue()).decode('utf-8')
     buffer_empleados.close()
-    plt.close()
 
-    # Número de empleados por cliente
+    # Gráfico 4: Cantidad de Empleados por Cliente
     empleados_totales = [len(empleados_por_cliente[cliente]) for cliente in clientes]
-
     plt.figure(figsize=(10, 6))
-    plt.bar(clientes, empleados_totales, color='orange')
-    plt.xlabel('Cliente')
-    plt.ylabel('Número de Empleados')
-    plt.title('Cantidad de Empleados por Cliente')
+    plt.bar(clientes, empleados_totales, color='orange', edgecolor='black')
+    plt.xlabel('Cliente', fontsize=12)
+    plt.ylabel('Cantidad de Empleados', fontsize=12)
+    plt.title('Cantidad de Empleados por Cliente', fontsize=14)
     plt.xticks(rotation=45)
-    plt.tight_layout()
-
     buffer_clientes = io.BytesIO()
     plt.savefig(buffer_clientes, format='png')
+    plt.close()
     buffer_clientes.seek(0)
     grafico_clientes = base64.b64encode(buffer_clientes.getvalue()).decode('utf-8')
     buffer_clientes.close()
-    plt.close()
 
+    # Renderizar datos y gráficos
     return render(request, 'reportes/informes.html', {
         'grafico_porcentajes_cliente': grafico_porcentajes_cliente,
         'grafico_comparativo_anual': grafico_comparativo_anual,
