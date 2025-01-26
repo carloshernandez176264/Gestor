@@ -1,13 +1,14 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
 from Gestor_tareas.models import Venta, Factura
 
-
+@login_required
 def listar_ventas(request):
     ventas = Venta.objects.all()
     return render(request, 'ventas/listar_ventas.html', {'ventas': ventas})
 
-
+@login_required
 def agregar_venta(request):
     if request.method == 'POST':
         factura_id = request.POST.get('factura_id')
@@ -26,6 +27,7 @@ def agregar_venta(request):
         return redirect('listar_ventas')
     return render(request, 'ventas/agregar_venta.html')
 
+@login_required
 def editar_venta(request, venta_id):
     venta = get_object_or_404(Venta, id=venta_id)
     if request.method == 'POST':
@@ -36,7 +38,7 @@ def editar_venta(request, venta_id):
         return redirect('listar_ventas')
     return render(request, 'ventas/editar_venta.html', {'venta': venta})
 
-
+@login_required
 def eliminar_venta(request, venta_id):
     venta = Venta.objects.get(id=venta_id)
     if request.method == 'POST':

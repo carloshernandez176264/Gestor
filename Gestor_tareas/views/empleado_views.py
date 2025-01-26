@@ -1,12 +1,13 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from Gestor_tareas.models import Empleado, Cliente
 
-
+@login_required
 def listar_empleados(request):
     empleados = Empleado.objects.all()
     return render(request, 'empleados/listar_empleados.html', {'empleados': empleados})
 
-
+@login_required
 def agregar_empleado(request):
     clientes = Cliente.objects.all()
     error = None
@@ -62,6 +63,8 @@ def agregar_empleado(request):
         'error': error,
     })
 
+
+@login_required
 def editar_empleado(request, empleado_id):
     empleado = Empleado.objects.get(id=empleado_id)
     if request.method == 'POST':
@@ -73,6 +76,8 @@ def editar_empleado(request, empleado_id):
         return redirect('listar_empleados')
     return render(request, 'empleados/editar_empleado.html', {'empleado': empleado})
 
+
+@login_required
 def eliminar_empleado(request, empleado_id):
     empleado = get_object_or_404(Empleado, id=empleado_id)
     if request.method == 'POST':

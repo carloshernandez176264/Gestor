@@ -86,6 +86,9 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
+AUTH_USER_MODEL = 'auth.User'
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -123,3 +126,8 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Redirigir al login si el usuario no está autenticado
+LOGIN_URL = '/auth/login/'
+LOGIN_REDIRECT_URL = '/clientes/'  # Página a la que redirige tras iniciar sesión
+LOGOUT_REDIRECT_URL = '/auth/login/'  # Página a la que redirige tras cerrar sesión

@@ -8,34 +8,40 @@
     <link rel="stylesheet" href="{% static 'styles.css' %}">
 </head>
 <body>
-    <div class="dashboard">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <h2 class="sidebar-title">Gestor</h2>
-            <ul class="sidebar-menu">
-                <li><a href="{% url 'listar_clientes' %}">Clientes</a></li>
-                <li><a href="{% url 'listar_empleados' %}">Empleados</a></li>
-                <li><a href="{% url 'agregar_factura' %}">Agregar Factura</a> </li>
-                <li><a href="{% url 'listar_facturas' %}">Facturas</a></li>
-                <li><a href="{% url 'listar_ventas' %}">Ventas</a></li>
-                <li><a href="{% url 'generar_informe' %}">Informes</a></li>
-            </ul>
-        </div>
+<form method="POST" action="{% url 'logout' %}" style="display: inline;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-link" style="text-decoration: none; color: red;">
+        Cerrar Sesión
+    </button>
+</form>
+<div class="dashboard">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2 class="sidebar-title">Gestor</h2>
+        <ul class="sidebar-menu">
+            <li><a href="{% url 'listar_clientes' %}">Clientes</a></li>
+            <li><a href="{% url 'listar_empleados' %}">Empleados</a></li>
+            <li><a href="{% url 'agregar_factura' %}">Agregar Factura</a></li>
+            <li><a href="{% url 'listar_facturas' %}">Facturas</a></li>
+            <li><a href="{% url 'listar_ventas' %}">Ventas</a></li>
+            <li><a href="{% url 'generar_informe' %}">Informes</a></li>
+        </ul>
+    </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Header -->
-            <header class="header">
-                <h1>{% block header %}Panel de Gestión{% endblock %}</h1>
-            </header>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <h1>{% block header %}Panel de Gestión{% endblock %}</h1>
+        </header>
 
-            <!-- Dynamic Content -->
-            <div class="content">
-                {% block content %}
+        <!-- Dynamic Content -->
+        <div class="content">
+            {% block content %}
                 <!-- Contenido dinámico de cada vista -->
-                {% endblock %}
-            </div>
+            {% endblock %}
         </div>
     </div>
+</div>
 </body>
 </html>

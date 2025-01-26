@@ -1,6 +1,8 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from Gestor_tareas.models import Factura, Cliente, Empleado
 
+@login_required
 def agregar_factura(request):
     clientes = Cliente.objects.all()
     empleados_filtrados = Empleado.objects.none()  # Ningún empleado por defecto
@@ -40,7 +42,7 @@ def agregar_factura(request):
 
     return render(request, 'facturas/agregar_factura.html', {'clientes': clientes, 'empleados': empleados_filtrados})
 
-
+@login_required
 def editar_factura(request, factura_id):
     factura = get_object_or_404(Factura, id=factura_id)
     if request.method == 'POST':
@@ -49,7 +51,7 @@ def editar_factura(request, factura_id):
         return redirect('listar_facturas')
     return render(request, 'facturas/editar_factura.html', {'factura': factura})
 
-
+@login_required
 def eliminar_factura(request, factura_id):
     factura = get_object_or_404(Factura, id=factura_id)
     if request.method == 'POST':
@@ -57,12 +59,14 @@ def eliminar_factura(request, factura_id):
         return redirect('listar_facturas')
     return render(request, 'facturas/eliminar_factura.html', {'factura': factura})
 
+@login_required
 def listar_facturas(request):
     facturas = Factura.objects.select_related('empleado', 'cliente').all()  # Optimiza la consulta
     return render(request, 'facturas/listar_facturas.html', {'facturas': facturas})
 
-
+@login_required
 def listar_facturas_empleado(request):
+
     empleado = request.user.empleado  # Suponiendo que el usuario autenticado está relacionado con el modelo Empleado
     if not empleado:
         return render(request, 'error.html', {'mensaje': 'Empleado no encontrado.'})

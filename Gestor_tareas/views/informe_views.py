@@ -1,17 +1,18 @@
 import random
 from collections import defaultdict
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from matplotlib import cm
 
 from Gestor_tareas.models import Factura
 import matplotlib.pyplot as plt
 import io
-import urllib
 import base64
 import openpyxl
 from django.http import HttpResponse
 
+@login_required
 def generar_informe(request):
     # Inicializar contenedores de datos
     facturacion_por_cliente = defaultdict(float)
@@ -116,6 +117,7 @@ def generar_informe(request):
         'facturacion_por_cliente': dict(facturacion_por_cliente),
     })
 
+@login_required
 def exportar_informe(request):
     # Crear un libro de Excel
     wb = openpyxl.Workbook()
