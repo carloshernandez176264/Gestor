@@ -9,31 +9,58 @@ def listar_empleados(request):
 
 def agregar_empleado(request):
     clientes = Cliente.objects.all()
+    error = None
 
     if request.method == 'POST':
-        nombre = request.POST.get('nombre')
-        correo = request.POST.get('correo')
-        telefono = request.POST.get('telefono')
-        direccion = request.POST.get('direccion')
-        puesto = request.POST.get('puesto')
-        salario = request.POST.get('salario')
-        fecha_contratacion = request.POST.get('fecha_contratacion')
-        cliente_id = request.POST.get('cliente_id')
+        try:
+            # Recoger datos del formulario
+            nombre = request.POST.get('nombre')
+            correo = request.POST.get('correo')
+            telefono = request.POST.get('telefono')
+            direccion = request.POST.get('direccion')
+            puesto = request.POST.get('puesto')
+            salario = request.POST.get('salario')
+            fecha_contratacion = request.POST.get('fecha_contratacion')
+            fecha_nacimiento = request.POST.get('fecha_nacimiento')
+            numero_identificacion = request.POST.get('numero_identificacion')
+            cliente_id = request.POST.get('cliente')
+            activo = request.POST.get('activo') == "True"
+            fecha_termino = request.POST.get('fecha_termino')
+            notas = request.POST.get('notas')
 
-        cliente = Cliente.objects.get(id=cliente_id)
-        Empleado.objects.create(
-            nombre=nombre,
-            correo=correo,
-            telefono=telefono,
-            direccion=direccion,
-            puesto=puesto,
-            salario=salario,
-            fecha_contratacion=fecha_contratacion,
-            cliente=cliente
-        )
-        return redirect('listar_empleados')
+            # Validación: cliente debe existir
+            cliente = get_object_or_404(Cliente, id=cliente_id)
 
-    return render(request, 'empleados/agregar_empleado.html', {'clientes': clientes})
+            # Crear empleado
+            empleado = Empleado(
+                nombre=nombre,
+                correo=correo,
+                telefono=telefono,
+                direccion=direccion,
+                puesto=puesto,
+                salario=salario,
+                fecha_contratacion=fecha_contratacion,
+                fecha_nacimiento=fecha_nacimiento,
+                numero_identificacion=numero_identificacion,
+                cliente=cliente,
+                activo=activo,
+                fecha_termino=fecha_termino,
+                notas=notas,
+            )
+            empleado.full_clean()  # Valida los datos antes de guardar
+            empleado.save()
+
+            return redirect('listar_empleados')
+
+        except Cliente.DoesNotExist:
+            error = "El cliente seleccionado no existe."
+        except Exception as e:
+            error = f"Ocurrió un error: {str(e)}"
+
+    return render(request, 'empleados/agregar_empleado.html', {
+        'clientes': clientes,
+        'error': error,
+    })
 
 def editar_empleado(request, empleado_id):
     empleado = Empleado.objects.get(id=empleado_id)

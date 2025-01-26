@@ -5,6 +5,11 @@
 {% block content %}
     <h1 style="text-align: center; color: #2c3e50; margin-bottom: 20px;">Lista de Empleados</h1>
 
+    <!-- Botón para agregar un nuevo empleado -->
+    <div style="text-align: right; margin-bottom: 20px;">
+        <a href="{% url 'agregar_empleado' %}" class="btn btn-primary">Agregar Empleado</a>
+    </div>
+
     <div class="content">
         <table class="styled-table">
             <thead>

@@ -3,67 +3,58 @@
 {% block title %}Agregar Empleado{% endblock %}
 
 {% block content %}
-    <!-- Título centrado -->
     <h1 style="text-align: center; color: #2c3e50; margin-bottom: 20px;">Agregar Empleado</h1>
 
-    <!-- Formulario estilizado -->
+    {% if error %}
+    <div style="color: red; margin-bottom: 20px; text-align: center;">
+        {{ error }}
+    </div>
+    {% endif %}
+
     <form method="POST" class="form-container">
         {% csrf_token %}
 
-        <!-- Nombre -->
         <div class="form-group">
             <label for="nombre">Nombre:</label>
             <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Ingrese el nombre completo" required>
         </div>
-
-        <!-- Correo -->
         <div class="form-group">
             <label for="correo">Correo:</label>
             <input type="email" name="correo" id="correo" class="form-control" placeholder="Ingrese el correo electrónico" required>
         </div>
-
-        <!-- Teléfono -->
         <div class="form-group">
             <label for="telefono">Teléfono:</label>
             <input type="text" name="telefono" id="telefono" class="form-control" placeholder="Ingrese el número de teléfono">
         </div>
-
-        <!-- Dirección -->
         <div class="form-group">
             <label for="direccion">Dirección:</label>
             <textarea name="direccion" id="direccion" class="form-control" placeholder="Ingrese la dirección"></textarea>
         </div>
-
-        <!-- Puesto -->
         <div class="form-group">
             <label for="puesto">Puesto:</label>
             <input type="text" name="puesto" id="puesto" class="form-control" placeholder="Ingrese el puesto" required>
         </div>
-
-        <!-- Salario -->
         <div class="form-group">
             <label for="salario">Salario:</label>
             <input type="number" step="0.01" name="salario" id="salario" class="form-control" placeholder="Ingrese el salario" required>
         </div>
-
-        <!-- Fecha de Contratación -->
         <div class="form-group">
             <label for="fecha_contratacion">Fecha de Contratación:</label>
             <input type="date" name="fecha_contratacion" id="fecha_contratacion" class="form-control" required>
         </div>
-
-        <!-- Cliente -->
         <div class="form-group">
-            <label for="cliente_id">Cliente:</label>
-            <select name="cliente_id" id="cliente_id" class="form-control" required>
+            <label for="numero_identificacion">Número de Identificación:</label>
+            <input type="text" name="numero_identificacion" id="numero_identificacion" class="form-control" placeholder="Ingrese el número de identificación" required>
+        </div>
+        <div class="form-group">
+            <label for="cliente">Cliente:</label>
+            <select name="cliente" id="cliente" class="form-control" required>
                 <option value="" disabled selected>Seleccione un cliente</option>
                 {% for cliente in clientes %}
                 <option value="{{ cliente.id }}">{{ cliente.nombre }}</option>
                 {% endfor %}
             </select>
         </div>
-
-        <!-- Botón de Guardar -->
         <button type="submit" class="btn btn-primary" style="width: 100%;">Guardar</button>
     </form>
 {% endblock %}
